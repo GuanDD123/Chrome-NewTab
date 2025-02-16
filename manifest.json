@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "New Tab Redirect",
+  "version": "1.0",
+  "description": "每次打开新标签页时重定向到指定网页。",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
+}
