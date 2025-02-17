@@ -1,5 +1,5 @@
 let db = null;
-const DEFAULT_WALLPAPER = chrome.runtime.getURL('images/default-wallpaper.png');
+const DEFAULT_WALLPAPER = chrome.runtime.getURL('wallpaper/bc13haet9350hio.png');
 
 function initDB(callback) {
     if (db) return callback(db);
@@ -16,86 +16,67 @@ function initDB(callback) {
     };
     request.onerror = function (event) {
         console.error('数据库打开失败:', event.target.error);
+        showToast("加载壁纸失败，使用默认壁纸", true);
+        document.body.style.backgroundImage = `url(${DEFAULT_WALLPAPER})`;
     };
 }
 
 window.onload = function () {
     initDB(function (db) {
-        const request = indexedDB.open('wallpaperDB', 1);
-        request.onupgradeneeded = function (event) {
-            const db = event.target.result;
-            if (!db.objectStoreNames.contains('wallpapers')) {
-                db.createObjectStore('wallpapers', { keyPath: 'id' });
+        const transaction = db.transaction(['wallpapers'], 'readonly');
+        const objectStore = transaction.objectStore('wallpapers');
+        const getRequest = objectStore.get(1);
+
+        getRequest.onsuccess = function () {
+            const wallpaper = getRequest.result;
+            if (!wallpaper || !wallpaper.imageData) {
+                document.body.style.backgroundImage = `url(${DEFAULT_WALLPAPER})`;
+                storeImageInIndexedDB(`url(${DEFAULT_WALLPAPER})`);
+            } else {
+                document.body.style.backgroundImage = `url(${wallpaper.imageData})`;
             }
         };
 
-        request.onsuccess = function (event) {
-            const db = event.target.result;
-            const transaction = db.transaction(['wallpapers'], 'readonly');
-            const objectStore = transaction.objectStore('wallpapers');
-
-            const getRequest = objectStore.get(1);
-            getRequest.onsuccess = function () {
-                const wallpaper = getRequest.result;
-
-                if (!wallpaper || !wallpaper.imageData) {
-                    document.body.style.backgroundImage = `url(${DEFAULT_WALLPAPER})`;
-                    storeImageInIndexedDB(`url(${DEFAULT_WALLPAPER})`);
-                } else {
-                    document.body.style.backgroundImage = `url(${wallpaper.imageData})`;
-                }
-            };
-            getRequest.onerror = function () {
-                document.body.style.backgroundImage = `url(${DEFAULT_WALLPAPER})`;
-                showToast("加载壁纸失败，使用默认壁纸", true);
-            };
-        };
-
-        request.onerror = function (event) {
-            console.error('打开 IndexedDB 失败:', event.target.error);
+        getRequest.onerror = function () {
             document.body.style.backgroundImage = `url(${DEFAULT_WALLPAPER})`;
+            showToast("加载壁纸失败，使用默认壁纸", true);
         };
     });
 };
 
 function storeImageInIndexedDB(dataUrl) {
     initDB(function (db) {
-        const request = indexedDB.open('wallpaperDB', 1);
-        request.onsuccess = function (event) {
-            const db = event.target.result;
-            const transaction = db.transaction(['wallpapers'], 'readwrite');
-            const objectStore = transaction.objectStore('wallpapers');
+        const transaction = db.transaction(['wallpapers'], 'readwrite');
+        const objectStore = transaction.objectStore('wallpapers');
 
-            const deleteRequest = objectStore.delete(1);
-            deleteRequest.onsuccess = function () {
-                const wallpaper = { id: 1, imageData: dataUrl };
-                const addRequest = objectStore.add(wallpaper);
-                addRequest.onsuccess = function () {
-                    console.log('壁纸已成功存储到 IndexedDB');
-                };
-                addRequest.onerror = function (event) {
-                    console.error('存储到 IndexedDB 失败:', event.target.error);
-                };
+        const deleteRequest = objectStore.delete(1);
+        deleteRequest.onsuccess = function () {
+            const wallpaper = { id: 1, imageData: dataUrl };
+            const addRequest = objectStore.add(wallpaper);
+            addRequest.onsuccess = function () {
+                console.log('壁纸已成功存储到 IndexedDB');
             };
-            deleteRequest.onerror = function () {
-                console.error('删除旧壁纸失败');
+            addRequest.onerror = function (event) {
+                console.error('存储到 IndexedDB 失败:', event.target.error);
             };
         };
-
-        request.onerror = function (event) {
-            console.error('IndexedDB 打开失败:', event.target.error);
-            showToast("壁纸保存失败，请重试", true);
+        deleteRequest.onerror = function () {
+            console.error('删除旧壁纸失败');
         };
     });
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fileInput').addEventListener('change', changeWallpaper);
 });
+
 function changeWallpaper(event) {
     const file = event.target.files[0];
     if (file) {
+        if (!file.type.startsWith('image/')) {
+            showToast("请选择有效的图片文件", true);
+            return;
+        }
         showToast("正在加载图片...");
         const reader = new FileReader();
         reader.onload = function (e) {
