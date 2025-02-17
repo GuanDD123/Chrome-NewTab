@@ -1,6 +1,7 @@
 let db = null;
 const DEFAULT_WALLPAPER = chrome.runtime.getURL('wallpaper/bc13haet9350hio.png');
 
+// 初始化数据库
 function initDB(callback) {
     if (db) return callback(db);
     const request = indexedDB.open('wallpaperDB', 1);
@@ -21,6 +22,7 @@ function initDB(callback) {
     };
 }
 
+// 页面加载时初始化数据库并设置背景图
 window.onload = function () {
     initDB(function (db) {
         const transaction = db.transaction(['wallpapers'], 'readonly');
@@ -31,7 +33,7 @@ window.onload = function () {
             const wallpaper = getRequest.result;
             if (!wallpaper || !wallpaper.imageData) {
                 document.body.style.backgroundImage = `url(${DEFAULT_WALLPAPER})`;
-                storeImageInIndexedDB(`url(${DEFAULT_WALLPAPER})`);
+                storeImageInIndexedDB(DEFAULT_WALLPAPER);
             } else {
                 document.body.style.backgroundImage = `url(${wallpaper.imageData})`;
             }
@@ -40,10 +42,12 @@ window.onload = function () {
         getRequest.onerror = function () {
             document.body.style.backgroundImage = `url(${DEFAULT_WALLPAPER})`;
             showToast("加载壁纸失败，使用默认壁纸", true);
+            storeImageInIndexedDB(DEFAULT_WALLPAPER);
         };
     });
 };
 
+// 存储壁纸到 IndexedDB
 function storeImageInIndexedDB(dataUrl) {
     initDB(function (db) {
         const transaction = db.transaction(['wallpapers'], 'readwrite');
@@ -68,10 +72,12 @@ function storeImageInIndexedDB(dataUrl) {
     });
 }
 
+// 监听文件选择并更新壁纸
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fileInput').addEventListener('change', changeWallpaper);
 });
 
+// 处理上传的文件，更新壁纸
 function changeWallpaper(event) {
     const file = event.target.files[0];
     if (file) {
@@ -97,6 +103,7 @@ function changeWallpaper(event) {
     }
 }
 
+// 显示提示信息
 function showToast(message, isError = false) {
     const toast = document.createElement('div');
     toast.textContent = message;
