@@ -3,7 +3,12 @@
   "name": "New Tab Redirect",
   "version": "1.0",
   "description": "每次打开新标签页时重定向到指定网页。",
+  "permissions": [ "storage" ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"
-  }
+  },
+  "web_accessible_resources": [ {
+      "resources": [ "wallpaper/bc13haet9350hio.png" ],
+      "matches": [ "<all_urls>" ]
+    } ]
 }

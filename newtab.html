@@ -1,16 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 
 <head>
-    <meta charset="utf-8">
-    <!-- 使用立即跳转 -->
-    <meta http-equiv="refresh" content="0; url=https://guandd123.github.io/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静态网页</title>
+    <link type="text/css" rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <!-- 备用跳转方式
-    <script>window.location.href = "https://guandd123.github.io/";</script>
-    -->
+    <div class="button-container">
+        <div class="button-group">
+            <a class="button" href="https://github.com/GuanDD123?tab=stars">GitHub</a>
+            <a class="button" href="https://translate.google.com/?sl=auto&tl=en&op=translate">Google 翻译</a>
+            <a class="button"
+                href="https://feedly.com/i/collection/content/user/972e175e-4d2e-4c15-a383-a6f9fff60320/category/global.all">Feedly</a>
+        </div>
+
+        <div class="button-group">
+            <div class="button-group_child">
+                <a class="button" href="https://chatgpt.com/">ChatGPT</a>
+                <a class="button" href="https://chat.deepseek.com/">DeepSeek</a>
+            </div>
+            <div class="button-group_child">
+                <a class="button" href="https://mail.google.com/mail/u/0/#inbox">Gmail</a>
+                <a class="button"
+                    href="https://mail.qq.com/cgi-bin/frame_html?sid=q2LYtEwmieggpwhu&r=ba6a64f0775154b0d588234087a833fa&lang=zh">QQmail</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="file-input-container">
+        <label for="fileInput" class="file-input">选择壁纸</label>
+        <input type="file" id="fileInput" accept="image/*" />
+    </div>
+
+    <script type="text/javascript" src="script.js"></script>
 </body>
 
 </html>

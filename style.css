@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    text-align: center;
+    width: 85%;
+    margin: 0 auto;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.button-group_child {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.button {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    border-radius: 50px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.button:hover {
+    transform: scale(1.05);
+    background-color: #ff7e5f;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.button:active {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+a:active {
+    color: #feb47b;
+}
+
+.file-input-container {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.file-input {
+    font-size: 16px;
+    color: #fff;
+    background-color: #ff7e5f;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.file-input:hover {
+    background-color: #feb47b;
+    transform: scale(1.05);
+}
+
+.file-input:active {
+    background-color: #ff7e5f;
+    transform: scale(1);
+}
+
+input[type="file"] {
+    display: none;
+}
