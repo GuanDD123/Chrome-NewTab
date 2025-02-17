@@ -58,10 +58,12 @@ function storeImageInIndexedDB(dataUrl) {
             };
             addRequest.onerror = function (event) {
                 console.error('存储到 IndexedDB 失败:', event.target.error);
+                showToast("存储壁纸失败，请稍后重试", true);
             };
         };
         deleteRequest.onerror = function () {
             console.error('删除旧壁纸失败');
+            showToast("删除旧壁纸失败", true);
         };
     });
 }
@@ -85,11 +87,12 @@ function changeWallpaper(event) {
                 storeImageInIndexedDB(result);
                 document.body.style.backgroundImage = `url(${result})`;
                 showToast("壁纸已更新！");
+                event.target.value = '';
             } else {
                 showToast("加载失败，请重试", true);
             }
         };
-        reader.onerror = () => showToast("文件读取失败", true);
+        reader.onerror = () => showToast("文件读取失败，请检查文件", true);
         reader.readAsDataURL(file);
     }
 }
